@@ -6,7 +6,7 @@
 /*   By: xlamiel- <xlamiel-@student.42barcelona.com>+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 18:51:57 by xlamiel-          #+#    #+#             */
-/*   Updated: 2025/05/28 05:45:11 by xlamiel-         ###   ########.fr       */
+/*   Updated: 2025/09/10 20:11:52 by xlamiel-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@
 # include <stdint.h>
 # include <limits.h>
 # include <unistd.h>
+
+// error 0, success 1
+typedef	struct	s_satol
+{
+	int	value;
+	int	error;
+} t_satol
 
 int		ft_atoi(const char *str);
 void	ft_bzero(void *s, size_t n);
@@ -38,6 +45,7 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 void	ft_putstr_fd(char *s, int fd);
+t_satol	ft_satol(const char *str);
 char	**ft_split(char const *s, char c);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char *s);
