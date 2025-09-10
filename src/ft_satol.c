@@ -6,11 +6,12 @@
 /*   By: xlamiel- <xlamiel-@student.42barcelona.com>+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 20:17:55 by xlamiel-          #+#    #+#             */
-/*   Updated: 2025/09/10 21:19:15 by xlamiel-         ###   ########.fr       */
+/*   Updated: 2025/09/10 21:52:43 by xlamiel-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <limits.h>
 
 int	ft_isspace(char c)
 {
@@ -28,74 +29,125 @@ int	ft_isspace(char c)
 		return (c == '\r');
 	return (0);
 }
-size_t	skip_spaces(const char *str)
-{
-	size_t	i;
 
+
+/* Definición de códigos de error
+#define ATOL_SUCCESS 0
+#define ATOL_OVERFLOW 1
+#define ATOL_INVALID_CHAR 2
+#define ATOL_NO_DIGITS 3
+#define ATOL_EMPTY_STRING 4
+*/
+
+typedef struct s_atol
+{
+	long	value;
+	int		error;
+}	t_atol;
+
+// Función optimizada para verificar espacios
+int	ft_isspace(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n' ||
+			c == '\v' || c == '\f' || c == '\r');
+}
+
+// Función para verificar overflow
+static int	check_overflow(long current, char next_digit, long sign)
+{
+	int	digit_value;
+
+	digit_value = next_digit - '0';
+
+	if (sign == 1)
+	{
+		if (current > LONG_MAX / 10)
+			return (1);
+		if (current == LONG_MAX / 10 && digit_value > LONG_MAX % 10)
+			return (1);
+	}
+	else
+	{
+		if (current > -(LONG_MIN / 10))
+			return (1);
+		if (current == -(LONG_MIN / 10) && digit_value > -(LONG_MIN % 10))
+			return (1);
+	}
+	return (0);
+}
+
+// Función principal modo estricto
+t_atol	ft_satol_strict(const char *str)
+{
+	t_atol	result;
+	long	sign;
+	size_t	i;
+	int		has_digits;
+
+	result.value = 0;
+	result.error = ATOL_SUCCESS;
+	sign = 1;
 	i = 0;
+	has_digits = 0;
+
+	// Verificar string vacía
+	if (str[i] == '\0')
+	{
+		result.error = ATOL_EMPTY_STRING;
+		return (result);
+	}
+
+	// Saltar espacios iniciales
 	while (ft_isspace(str[i]))
 		i++;
-	return (i);
-}
 
-// Función para procesar el signo
-long	process_sign(const char *str, size_t *i)
-{
-	long	sign;
-
-	sign = 1;
-	if (str[*i] == '-' || str[*i] == '+')
+	// Procesar signo
+	if (str[i] == '-' || str[i] == '+')
 	{
-		if (str[*i] == '-')
+		if (str[i] == '-')
 			sign = -1;
-		(*i)++;
-	}
-	return (sign);
-}
-
-// Función para convertir dígitos con verificación de overflow
-t_atol	convert_digits(const char *str, size_t i, long sign)
-{
-	t_atol	result;
-	int		digit_value;
-
-	result.value = 0;
-	result.error = 0;
-	while (ft_isdigit(str[i]))
-	{
-		digit_value = str[i] - '0';
-		if (sign == 1 && (result.value > LONG_MAX / 10 || 
-			(result.value == LONG_MAX / 10 && digit_value > LONG_MAX % 10)))
-		{
-			result.error = 1;
-			result.value = LONG_MAX;
-			return (result);
-		}
-		if (sign == -1 && (result.value > -(LONG_MIN / 10) || 
-			(result.value == -(LONG_MIN / 10) && digit_value > -(LONG_MIN % 10))))
-		{
-			result.error = 1;
-			result.value = LONG_MIN;
-			return (result);
-		}
-		result.value = result.value * 10 + digit_value;
 		i++;
 	}
+
+	// Verificar que hay al menos un dígito después del signo
+	if (!ft_isdigit(str[i]))
+	{
+		result.error = ATOL_NO_DIGITS;
+		return (result);
+	}
+
+	// Convertir dígitos
+	while (ft_isdigit(str[i]))
+	{
+		has_digits = 1;
+
+		// Verificar overflow
+		if (check_overflow(result.value, str[i], sign))
+		{
+			result.error = ATOL_OVERFLOW;
+			result.value = (sign == 1) ? LONG_MAX : LONG_MIN;
+			return (result);
+		}
+
+		result.value = result.value * 10 + (str[i] - '0');
+		i++;
+	}
+
+	// Modo ESTRICTO: después de los dígitos debe ser el final
+	if (str[i] != '\0')
+	{
+		result.error = ATOL_INVALID_CHAR;
+		result.value = 0;
+		return (result);
+	}
+
+	// Verificar que al menos hubo un dígito (por si acaso)
+	if (!has_digits)
+	{
+		result.error = ATOL_NO_DIGITS;
+		return (result);
+	}
+
 	result.value *= sign;
-	return (result);
-}
-
-// Función principal ft_satol
-t_atol	ft_satol(const char *str)
-{
-	t_atol	result;
-	size_t	i;
-	long	sign;
-
-	result.value = 0;
-	result.error = 0;
-	i = skip_spaces(str);
-	sign = process_sign(str, &i);
-	result = convert_digits(str, i, sign);
 	return (result);
 }

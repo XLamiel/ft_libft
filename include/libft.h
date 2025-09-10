@@ -6,7 +6,7 @@
 /*   By: xlamiel- <xlamiel-@student.42barcelona.com>+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 18:51:57 by xlamiel-          #+#    #+#             */
-/*   Updated: 2025/09/10 20:11:52 by xlamiel-         ###   ########.fr       */
+/*   Updated: 2025/09/10 21:53:15 by xlamiel-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,32 @@
 # include <limits.h>
 # include <unistd.h>
 
+// ft_satol.c
+# ifndef SATOL_SUCCESS
+#  define SATOL_SUCCESS 0
+# endif
+
+# ifndef SATOL_OVERFLOW 
+#  define SATOL_OVERFLOW 1
+# endif
+
+# ifndef SATOL_INVALID_CHAR
+#  define SATOL_INVALID_CHAR 2
+# endif
+
+# ifndef SATOL_NO_DIGITS 
+#  define SATOL_NO_DIGITS 3
+# endif
+
+# ifndef SATOL_EMPTY_STRING 
+#  define SATOL_EMPTY_STRING 4
+# endif
+
 // error 0, success 1
 typedef	struct	s_satol
 {
-	int	value;
-	int	error;
+	long	value;
+	int		error;
 } t_satol
 
 int		ft_atoi(const char *str);
