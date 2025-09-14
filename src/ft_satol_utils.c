@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_satol.c                                         :+:      :+:    :+:   */
+/*   ft_satol_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: xlamiel- <xlamiel-@student.42barcelona.com>+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -31,32 +31,44 @@ typedef struct	s_satol
 
 */
 
-t_satol	l_validate_trailing_chars(const char *str, size_t i, t_satol result)
+size_t	l_skip_spaces(const char *str)
 {
-	if (str[i] != '\0')
-	{
-		result.error = SATOL_INVALID_CHAR;
-		result.value = 0;
-	}
-	return (result);
+	size_t	i;
+
+	i = 0;
+	while (ft_isspace(str[i]))
+		i++;
+	return (i);
 }
 
-t_satol ft_satol(const char *str)
+long	l_process_sign(const char *str, size_t *i)
 {
-	t_satol result;
-	size_t i;
-	long sign;
+	long	sign;
 
-	if (!str || str[0] == '\0')
-		return ((t_satol){.value = 0, .error = SATOL_EMPTY_STRING});
+	sign = 1;
+	if (str[*i] == '-' || str[*i] == '+')
+	{
+		if (str[*i] == '-')
+			sign = -1;
+		(*i)++;
+	}
+	return (sign);
+}
 
-	i = l_skip_spaces(str);
-	sign = l_process_sign(str, &i);
-	if (!ft_isdigit(str[i]))
-		return ((t_satol){.value = 0, .error = SATOL_NO_DIGITS});
+int	l_check_overflow_negative(long value, int digit_val)
+{
+	if (value < LONG_MIN / 10)
+		return (1);
+	if (value == LONG_MIN / 10 && digit_val > -(LONG_MIN % 10))
+		return (1);
+	return (0);
+}
 
-	result = l_parse_digits(str, &i, sign);
-	if (result.error != SATOL_SUCCESS)
-		return (result);
-	return (l_validate_trailing_chars(str, i, result));
+int	l_check_overflow_positive(long value, int digit_val)
+{
+	if (value > LONG_MAX / 10)
+		return (1);
+	if (value == LONG_MAX / 10 && digit_val > LONG_MAX % 10)
+		return (1);
+	return (0);
 }
