@@ -40,20 +40,18 @@ t_satoi	i_validate_trailing_chars(const char *str, size_t i, t_satoi result)
 	return (result);
 }
 
-t_satoi ft_satoi(const char *str)
+t_satoi	ft_satoi(const char *str)
 {
-	t_satoi result;
-	size_t i;
-	int sign;
+	t_satoi	result;
+	size_t	i;
+	int		sign;
 
 	if (!str || str[0] == '\0')
 		return ((t_satoi){.value = 0, .error = SATOI_EMPTY_STRING});
-
 	i = i_skip_spaces(str);
 	sign = i_process_sign(str, &i);
 	if (!ft_isdigit(str[i]))
 		return ((t_satoi){.value = 0, .error = SATOI_NO_DIGITS});
-
 	result = i_parse_digits(str, &i, sign);
 	if (result.error != SATOI_SUCCESS)
 		return (result);

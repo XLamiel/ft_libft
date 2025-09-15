@@ -41,20 +41,18 @@ t_satol	l_validate_trailing_chars(const char *str, size_t i, t_satol result)
 	return (result);
 }
 
-t_satol ft_satol(const char *str)
+t_satol	ft_satol(const char *str)
 {
-	t_satol result;
-	size_t i;
-	long sign;
+	t_satol	result;
+	size_t	i;
+	long	sign;
 
 	if (!str || str[0] == '\0')
 		return ((t_satol){.value = 0, .error = SATOL_EMPTY_STRING});
-
 	i = l_skip_spaces(str);
 	sign = l_process_sign(str, &i);
 	if (!ft_isdigit(str[i]))
 		return ((t_satol){.value = 0, .error = SATOL_NO_DIGITS});
-
 	result = l_parse_digits(str, &i, sign);
 	if (result.error != SATOL_SUCCESS)
 		return (result);

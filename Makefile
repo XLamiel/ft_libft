@@ -94,12 +94,12 @@ SRC			:= \
 	$(SRC_DIR)/ft_printf_pointer.c \
 	$(SRC_DIR)/ft_printf_string.c \
 	$(SRC_DIR)/ft_printf_unsigned.c \
-	$(SRC_DIR)/ft_satol.c \
-	$(SRC_DIR)/ft_satol_core.c \
-	$(SRC_DIR)/ft_satol_utils.c \
 	$(SRC_DIR)/ft_satoi.c \
 	$(SRC_DIR)/ft_satoi_core.c \
-	$(SRC_DIR)/ft_satoi_utils.c
+	$(SRC_DIR)/ft_satoi_utils.c \
+	$(SRC_DIR)/ft_satol.c \
+	$(SRC_DIR)/ft_satol_core.c \
+	$(SRC_DIR)/ft_satol_utils.c 
 
 ###############################################################################
 # 🔧 Derived File Lists

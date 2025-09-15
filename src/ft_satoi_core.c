@@ -73,7 +73,10 @@ int	i_process_digit_loop(const char *str, size_t *i, t_satoi *result, int sign)
 			return (i_handle_overflow(result, sign, i, str));
 		(*i)++;
 	}
-	return (has_digits ? SATOI_SUCCESS : SATOI_NO_DIGITS);
+	if (has_digits)
+		return (SATOI_SUCCESS);
+	else
+		return (SATOI_NO_DIGITS);
 }
 
 int	i_convert_digits(const char *str, size_t *i, t_satoi *result, int sign)
@@ -90,14 +93,13 @@ int	i_convert_digits(const char *str, size_t *i, t_satoi *result, int sign)
 	return (SATOI_SUCCESS);
 }
 
-t_satoi i_parse_digits(const char *str, size_t *i, int sign)
+t_satoi	i_parse_digits(const char *str, size_t *i, int sign)
 {
-	t_satoi result;
-	int error_code;
+	t_satoi	result;
+	int		error_code;
 
 	result.value = 0;
 	result.error = SATOI_SUCCESS;
-
 	error_code = i_convert_digits(str, i, &result, sign);
 	if (error_code != SATOI_SUCCESS)
 	{

@@ -74,7 +74,10 @@ int	l_process_digit_loop(const char *str, size_t *i, t_satol *result, long sign)
 			return (l_handle_overflow(result, sign, i, str));
 		(*i)++;
 	}
-	return (has_digits ? SATOL_SUCCESS : SATOL_NO_DIGITS);
+	if (has_digits)
+		return (SATOL_SUCCESS);
+	else
+		return (SATOL_NO_DIGITS);
 }
 
 int	l_convert_digits(const char *str, size_t *i, t_satol *result, long sign)
@@ -91,14 +94,13 @@ int	l_convert_digits(const char *str, size_t *i, t_satol *result, long sign)
 	return (SATOL_SUCCESS);
 }
 
-t_satol l_parse_digits(const char *str, size_t *i, long sign)
+t_satol	l_parse_digits(const char *str, size_t *i, long sign)
 {
-	t_satol result;
-	int error_code;
+	t_satol	result;
+	int		error_code;
 
 	result.value = 0;
 	result.error = SATOL_SUCCESS;
-
 	error_code = l_convert_digits(str, i, &result, sign);
 	if (error_code != SATOL_SUCCESS)
 	{
